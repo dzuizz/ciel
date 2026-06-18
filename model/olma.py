@@ -1,5 +1,5 @@
 from ollama import Client
-from context import Context
+from model.context import Context
 
 
 class localModel:
@@ -17,4 +17,9 @@ class localModel:
             stream=True,
         )
 
-        return stream
+        response = []
+        for chunk in stream:
+            response.append(chunk["message"]["content"])
+            yield chunk
+
+        self.context.add_pair(qns, "".join(response))
