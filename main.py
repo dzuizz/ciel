@@ -1,9 +1,12 @@
+import time
+
 from ollama import chat
 from pathlib import Path
 
 
 PROFILE = Path("PROFILE.md")
 RULES = Path("RULES.md")
+MODEL = "llama3.2:1b"
 
 
 def get_prompt(msg: str) -> str:
@@ -20,16 +23,24 @@ def main() -> None:
             break
 
         prompt = get_prompt(msg)
-        print(prompt)
+        # print(prompt)  TODO: implement error logs later
 
         stream = chat(
-            model="qwen3.5:latest",
+            model=MODEL,
             messages=[{"role": "user", "content": prompt}],
             stream=True,
         )
+        start_stream = time.time()
+        print("\rdoing something...", end="", flush=True)
+
+        chunk = next(stream)
+        print(f"\r{chunk['message']['content']}", end="", flush=True)
+
         for chunk in stream:
             print(chunk["message"]["content"], end="", flush=True)
-        print()
+        print(flush=True)
+        elapsed_stream = time.time() - start_stream
+        print(f"answered in {elapsed_stream:.1f}s", flush=True)
 
 
 if __name__ == "__main__":
