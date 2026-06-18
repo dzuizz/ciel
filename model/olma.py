@@ -9,11 +9,11 @@ class localModel:
         self.model = model
 
     def ask(self, qns: str):
-        prompt = self.context.inject(qns)
+        self.context.add_message({"role": "user", "content": qns})
 
         stream = self.client.chat(
             model=self.model,
-            messages=[{"role": "user", "content": prompt}],
+            messages=self.context.get_messages(),
             stream=True,
         )
 
@@ -22,4 +22,4 @@ class localModel:
             response.append(chunk["message"]["content"])
             yield chunk
 
-        self.context.add_pair(qns, "".join(response))
+        self.context.add_message({"role": "assistant", "content": "".join(response)})

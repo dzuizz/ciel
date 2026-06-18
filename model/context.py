@@ -8,19 +8,13 @@ class Context:
     def __init__(self) -> None:
         self.profile = PROFILE.read_text(encoding="utf-8")
         self.rules = RULES.read_text(encoding="utf-8")
-        self.convo = []  # (question, response)
+        self.messages = [{"role": "system", "content": self.get_context()}]
 
-    def inject(self, prompt) -> str:
-        return "\n".join(
-            [
-                "\n".join(f"{q}\n{r}" for q, r in self.convo),
-                self.profile,
-                self.rules,
-                prompt,
-            ]
-        )
-        # TODO: (crude concat) replace with proper templating
+    def add_message(self, message) -> None:
+        self.messages.append(message)
 
-    def add_pair(self, qns: str, response: str) -> None:
-        self.convo.append((qns, response))
-        # TODO: (convo size scales very fast) compress the context
+    def get_context(self) -> str:
+        return "\n".join([self.profile, self.rules])
+
+    def get_messages(self):
+        return self.messages
