@@ -4,8 +4,8 @@ from ollama import chat
 from pathlib import Path
 
 
-PROFILE = Path("PROFILE.md")
-RULES = Path("RULES.md")
+PROFILE = Path("env/PROFILE.md")
+RULES = Path("env/RULES.md")
 MODEL = "llama3.2:1b"
 
 
