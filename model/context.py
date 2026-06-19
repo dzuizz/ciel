@@ -1,7 +1,14 @@
 from pathlib import Path
 
-PROFILE = Path("env/PROFILE.md")
-RULES = Path("env/RULES.md")
+
+def _ctx(name: str) -> Path:
+    private = Path("env") / name
+    return private if private.exists() else Path("env.example") / name
+
+
+PROFILE = _ctx("PROFILE.md")
+RULES = _ctx("RULES.md")
+NOTES = _ctx("notes")  # TODO: add notes RAG
 
 
 class Context:
